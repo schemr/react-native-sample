@@ -5,6 +5,7 @@ import AuthScreen from './src/screens/Auth/Auth';
 import SharePlaceScreen from "./src/screens/SharePlace/SharePlace";
 import FindPlaceScreen from "./src/screens/FindPlace/FindPlace";
 import DetailPlaceScreen from './src/screens/DetailPlace/DetailPlace';
+import SideMenu from './src/screens/SideMenu/SideMenu';
 import configureStore from './src/store/configureStore';
 
 const store = configureStore();
@@ -31,6 +32,12 @@ Navigation.registerComponent(
 Navigation.registerComponent(
   "places.DetailPlaceScreen", 
   () => DetailPlaceScreen,
+  store,
+  Provider
+);
+Navigation.registerComponent(
+  "places.SideMenu", 
+  () => SideMenu,
   store,
   Provider
 );
