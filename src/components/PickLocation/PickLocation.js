@@ -9,7 +9,7 @@ class PickLocation extends Component {
                     <Text>Map</Text>
                 </View>
                 <View style={styles.btnContainer}>
-                    <Button title="Locate Me" />
+                    <Button title="Locate Me" onPress={()=>alert('locate')} />
                 </View>
             </View>
         );
