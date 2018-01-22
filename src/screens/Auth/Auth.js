@@ -87,7 +87,6 @@ class AuthScreen extends Component {
             }
         }
         this.setState(prevState => {
-            console.log(prevState)
             return { 
                 controls: {
                     ...prevState.controls,
@@ -130,10 +129,20 @@ class AuthScreen extends Component {
                     {headingText}
                     <ButtonWithBackground color="#29aaf4" onPress={this.switchAuthModeHander}>Switch to {this.state.authMode === 'login' ? 'Signup' : 'Login'}</ButtonWithBackground>
                     <View style={styles.inputContainer}>
-                        <InputStyle style={styles.input} placeholder="Email Address" value={this.state.controls.email.value} onChangeText={val => this.updateInputState('email', val)} valid={this.state.controls.email.valid} touched={this.state.controls.email.touched}/>
+                        <InputStyle 
+                            style={styles.input} 
+                            placeholder="Email Address" 
+                            value={this.state.controls.email.value} onChangeText={val => this.updateInputState('email', val)} 
+                            valid={this.state.controls.email.valid} 
+                            touched={this.state.controls.email.touched} />
                         <View style={this.state.viewMode === 'portrait' || this.state.authMode === 'login' ? styles.portraitPasswordContainer : styles.landscapePasswordContainer}>
                         <View style={this.state.viewMode === 'portrait' || this.state.authMode === 'login' ? styles.portraitPasswordWrapper : styles.landscapePasswordWrapper}>
-                            <InputStyle style={styles.input} placeholder="Password" value={this.state.controls.password.value} onChangeText={val => this.updateInputState('password', val)} valid={this.state.controls.password.valid} touched={this.state.controls.password.touched} />
+                            <InputStyle 
+                                style={styles.input} 
+                                placeholder="Password" 
+                                value={this.state.controls.password.value} onChangeText={val => this.updateInputState('password', val)} 
+                                valid={this.state.controls.password.valid} 
+                                touched={this.state.controls.password.touched} />
                         </View>
                         {confirmPasswordControl}
                         </View>
