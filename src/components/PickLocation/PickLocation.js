@@ -29,6 +29,11 @@ class PickLocation extends Component {
                 },
                 locationChosen: true
             }
+        });
+        console.log(coords.latitude)
+        this.props.onLocationPick({
+            latitude: coords.latitude,
+            longitude: coords.longitude
         })
     }
     getLocationHandler = () => {
