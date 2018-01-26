@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, View, Text, TextInput, Button, StyleSheet, Image } from 'react-native';
+import { ScrollView, View, Text, TextInput, Button, StyleSheet, Image, ActivityIndicator } from 'react-native';
 
 import { connect } from 'react-redux';
 import { addPlace } from '../../store/actions';
@@ -92,6 +92,15 @@ class SharePlaceScreen extends Component {
         this.props.onAddPlace(this.state.controls.placeName.value, this.state.controls.location.value, this.state.controls.image.value);
     };
     render() {
+        let submitButton = (
+            <Button 
+                title="Share the Place" 
+                onPress={this.placeAddedHandler} 
+                disabled={!this.state.controls.placeName.valid || !this.state.controls.location.valid || !this.state.controls.image.value} />
+        );
+        if(this.props.isLoading) {
+            submitButton = <ActivityIndicator />
+        }
         return (
             <ScrollView>
                 <View style={styles.container}>
@@ -107,10 +116,7 @@ class SharePlaceScreen extends Component {
                         onChangeText={this.placeNameChangedHandler} autoCapitalize='none'
                         autoCorrect={false} />
                     <View style={styles.btnContainer}>
-                        <Button 
-                            title="Share the Place" 
-                            onPress={this.placeAddedHandler} 
-                            disabled={!this.state.controls.placeName.valid || !this.state.controls.location.valid || !this.state.controls.image.value} />
+                        {submitButton}
                     </View>
                 </View>
             </ScrollView>
@@ -128,10 +134,16 @@ const styles = StyleSheet.create({
     }
 })
 
+const mapStateToProps = state => {
+    return {
+        isLoading: state.ui.isLoading
+    }
+}
+
 const mapDispatchToProps = dispatch => {
     return {
         onAddPlace: (placeName, location, image) => dispatch(addPlace(placeName, location, image))
     }
 }
 
-export default connect(null, mapDispatchToProps)(SharePlaceScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(SharePlaceScreen);
