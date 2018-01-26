@@ -104,7 +104,8 @@ class SharePlaceScreen extends Component {
                     <PickLocation onLocationPick={this.locationPickedHandler} />
                     <PlaceInput 
                         placeData={this.state.controls.placeName} 
-                        onChangeText={this.placeNameChangedHandler} />
+                        onChangeText={this.placeNameChangedHandler} autoCapitalize='none'
+                        autoCorrect={false} />
                     <View style={styles.btnContainer}>
                         <Button 
                             title="Share the Place" 
