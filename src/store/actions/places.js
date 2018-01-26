@@ -19,7 +19,7 @@ export const addPlace = (placeName, location, image) => {
         .then(data => {
             const placeData = {
                 name: placeName,
-                locaton: location,
+                location: location,
                 image: data.imageUrl
             };
             return fetch('https://test-183c9.firebaseio.com/places.json', {
@@ -50,15 +50,16 @@ export const getPlaces = () => {
         .then(res => res.json())
         .then(data => {
             const places = [];
-            for(let key in place) {
+            for(let key in data) {
                 places.push({
-                    ...place[key],
+                    ...data[key],
                     image: {
-                        uri: place[key].image
+                        uri: data[key].image
                     },
                     key: key
                 })
             }
+            console.log(places)
             dispatch(setPlaces(places));
         });
     };
