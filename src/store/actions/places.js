@@ -1,19 +1,25 @@
 import { ADD_PLACE, DELETE_PLACE, SET_PLACES, REMOVE_PLACE } from './actionTypes';
-import { uiStartLoading, uiStopLoading} from './index';
+import { uiStartLoading, uiStopLoading, authGetToken } from './index';
 
 export const addPlace = (placeName, location, image) => {
     return dispatch => {
+        let authToken;
         dispatch(uiStartLoading());
-        fetch("https://us-central1-test-183c9.cloudfunctions.net/storeImage", {
-            method: "POST",
-            body: JSON.stringify({
-                image: image.base64
-            })
+        dispatch(authGetToken())
+        .catch(()=>{
+            alert("No valid token")
         })
-        .catch(err => {
-            console.log(err);
-            alert('Upload Error')
-            dispatch(uiStopLoading());
+        .then(token => {
+            authToken = token;
+            return fetch("https://us-central1-test-183c9.cloudfunctions.net/storeImage", {
+                method: "POST",
+                body: JSON.stringify({
+                    image: image.base64
+                }),
+                headers: {
+                    "Authorization": "Bearer "+authToken
+                }
+            })
         })
         .then(res => res.json())
         .then(data => {
@@ -22,19 +28,19 @@ export const addPlace = (placeName, location, image) => {
                 location: location,
                 image: data.imageUrl
             };
-            return fetch('https://test-183c9.firebaseio.com/places.json', {
+            return fetch('https://test-183c9.firebaseio.com/places.json?auth='+authToken, {
                 method: 'POST',
                 body: JSON.stringify(placeData)
             })
         })
-        .catch(err => {
-            console.log(err);
-            alert('Upload Error')
-            dispatch(uiStopLoading());
-        })
         .then(res => res.json())
         .then(data => {
             console.log(data);
+            dispatch(uiStopLoading());
+        })
+        .catch(err => {
+            console.log(err);
+            alert('Error add place')
             dispatch(uiStopLoading());
         });
     };
@@ -42,26 +48,32 @@ export const addPlace = (placeName, location, image) => {
 
 export const getPlaces = () => {
     return dispatch => {
-        fetch("https://test-183c9.firebaseio.com/places.json")
-        .catch(err => {
-            alert('Error get place');
-            console.log(err);
-        })
-        .then(res => res.json())
-        .then(data => {
-            const places = [];
-            for(let key in data) {
-                places.push({
-                    ...data[key],
-                    image: {
-                        uri: data[key].image
-                    },
-                    key: key
-                })
-            }
-            console.log(places)
-            dispatch(setPlaces(places));
-        });
+        dispatch(authGetToken())
+            .then(token => {
+                return fetch("https://test-183c9.firebaseio.com/places.json?auth="+token)
+            })
+            .catch(()=>{
+                alert("No valid token")
+            })
+            .then(res => res.json())
+            .then(data => {
+                const places = [];
+                for(let key in data) {
+                    places.push({
+                        ...data[key],
+                        image: {
+                            uri: data[key].image
+                        },
+                        key: key
+                    })
+                }
+                console.log(places)
+                dispatch(setPlaces(places));
+            })
+            .catch(err => {
+                alert('Error get place');
+                console.log(err);
+            });
     };
 };
 
@@ -74,17 +86,24 @@ export const setPlaces = places => {
 
 export const deletePlace = (key) => {
     return dispatch => {
-        fetch("https://test-183c9.firebaseio.com/places/"+key+".json", {
-            method: "DELETE"
+        dispatch(authGetToken()
+        .catch(()=>{
+            alert("No valid token")
         })
-        .catch(err => {
-            alert('Error get place');
-            console.log(err);
-        })
-        .then(res => res.json())
-        .then(data => {
+        .then(token => {
             dispatch(removePlace(key));
-        });
+            return fetch("https://test-183c9.firebaseio.com/places/"+key+".json?auth="+token, {
+                method: "DELETE"
+            })
+            .then(res => res.json())
+            .then(data => {
+                
+            })
+            .catch(err => {
+                alert('Error delete place');
+                console.log(err);
+            })
+        }))
     }
 };
 
